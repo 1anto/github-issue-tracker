@@ -1,11 +1,12 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
+import NavBar from "../components/NavBar";
+import IssueRow from "../components/IssueRow";
 
-function Issues(props) {
+function Issues() {
   let { owner, repo } = useParams();
   let [responseData, setResponseData] = React.useState("");
-  let [repoProps, setRepoProps] = React.useState("");
 
   const fetchData = React.useCallback(() => {
     axios({
@@ -28,43 +29,33 @@ function Issues(props) {
 
   React.useEffect(() => {
     fetchData();
-    setRepoProps(props.location.repoProps && props.location.repoProps);
-  }, [fetchData, props]);
+  }, [fetchData]);
 
   return (
     <div>
-      <h2>Issues</h2>
+      <h2>Issues Reported</h2>
+      <NavBar owner={owner} repo={repo} />
 
-      <h3>{repoProps.fullName}</h3>
-      <h4>{repoProps.stargazers_count} Stars</h4>
+      {/* <h3>{repoProps.fullName}</h3>
+      <h4>{repoProps.stargazers_count} Stars</h4> */}
       {/* <pre>
         <code>{responseData && JSON.stringify(responseData, null, 4)}</code>
       </pre> */}
-      <ul>
-        {responseData &&
-          responseData.map((issue, index) => (
-            <li key={index}>
-              <Link
-                to={{
-                  pathname: `/issue/${owner}/${repo}/${issue.number}`,
-                  repoProps: repoProps,
-                }}
-              >
-                {issue.title}
-              </Link>
-            </li>
-          ))}
-        {/*           
-        <li>
-          <Link to={`/issue/${owner}/${repo}/iss1`}>Issue 1</Link>
-        </li>
-        <li>
-          <Link to={`/issue/${owner}/${repo}/iss2`}>Issue 2</Link>
-        </li>
-        <li>
-          <Link to={`/issue/${owner}/${repo}/iss3`}>Issue 3</Link>
-        </li> */}
-      </ul>
+      {/* <ul> */}
+      {responseData &&
+        responseData.map((issue, index) => (
+          <IssueRow issue={issue} key={index} owner={owner} repo={repo} />
+          // <li key={index}>
+          //   <Link
+          //     to={{
+          //       pathname: `/issue/${owner}/${repo}/${issue.number}`,
+          //     }}
+          //   >
+          //     {issue.title}
+          //   </Link>
+          // </li>
+        ))}
+      {/* </ul> */}
     </div>
   );
 }

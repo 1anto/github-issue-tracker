@@ -1,11 +1,11 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import NavBar from "../components/NavBar";
 
-function Issue(props) {
+function Issue() {
   let { owner, repo, issueNumber } = useParams();
   let [responseData, setResponseData] = React.useState("");
-  let [repoProps, setRepoProps] = React.useState("");
 
   const fetchData = React.useCallback(() => {
     axios({
@@ -23,12 +23,11 @@ function Issue(props) {
     })
       .then((response) => {
         setResponseData(response.data);
-        setRepoProps(props.location.repoProps && props.location.repoProps);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [owner, repo, issueNumber, props]);
+  }, [owner, repo, issueNumber]);
 
   React.useEffect(() => {
     fetchData();
@@ -36,16 +35,17 @@ function Issue(props) {
 
   return (
     <div>
-      <h2>{repoProps.fullName}</h2>
-      <h4>{repoProps.stargazers_count} Stars</h4>
+      <NavBar owner={owner} repo={repo} />
+      {/* <h2>{repoProps.fullName}</h2>
+      <h4>{repoProps.stargazers_count} Stars</h4> */}
       <h3>{responseData.title}</h3>
       <h3>#{responseData.id}</h3>
       <p>
         Opened {responseData.created_at} by{" "}
         {responseData.user && responseData.user.login}
       </p>
-      <h3>{responseData.title}</h3>
-      <h3>{responseData.title}</h3>
+      {/* <h3>{responseData.title}</h3>
+      <h3>{responseData.title}</h3> */}
       <pre>
         <code>{responseData && JSON.stringify(responseData, null, 4)}</code>
       </pre>
